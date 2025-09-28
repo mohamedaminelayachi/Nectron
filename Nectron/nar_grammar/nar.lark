@@ -1,0 +1,134 @@
+start: var_block action_block return_block
+
+var_block: "var:" var_list*
+action_block: "action:" action_list*
+return_block: "return:" return_list*
+
+var_list: (var)* var
+var: param_list ":" TYPE
+
+action_list: (action)* action
+action: assignment "condition" condition
+      | NONE "condition" condition
+
+condition_list: (cond ANDOR)* cond
+              | "(" (cond ANDOR)* cond ")"
+              | "(" condition_list ")"
+
+condition: condition_list
+         | COND_ANY
+
+cond: "(" comparison ")"
+    | NOT "(" comparison ")"
+    | NOT condition_list
+    | "(" condition_list ")"
+
+COND_ANY: "ANY"
+NONE: "None"
+
+return_list: (return_)* return_
+return_: return_types "condition" condition
+       | NONE "condition" condition
+
+return_types: expr | BOOL | func
+
+comparison: expr comp_op expr
+          | func comp_op func
+          | func comp_op expr
+          | expr comp_op func
+          | NAME IS BOOL
+          | func IS BOOL
+
+comp_op: LT | GT | EQ | GTE | LTE | NEQ | NEQ_ALT
+
+LT: "<"
+GT: ">"
+EQ: "=="
+GTE: ">="
+LTE: "<="
+NEQ: "!="
+NEQ_ALT: "<>"
+IS: "is"
+
+assignment: NAME "=" expr
+          | NAME "=" BOOL
+
+param_list: (NAME ",")* NAME
+
+parameters: NAME | func | expr | NUMBER |
+
+COMMA: ","
+
+bitwise_op: BAND | BOR | BLS | BRS | BXOR
+
+BNOT: "~"
+BAND: "&"
+BOR: "|"
+BLS: "<<"
+BRS: ">>"
+BXOR: "^"
+
+TYPE: "integer"
+    | "real"
+    | "vector"
+    | "boolean"
+    | "pointer"
+
+ASSIGN: "="
+
+SIGN: MINUS | PLUS
+
+func: NAME "(" args? ")"
+
+args: ((expr ",")* expr)
+
+expr: term
+    | expr "+" term -> add
+    | expr "-" term -> sub
+    | expr "|" term -> bitor
+
+term: factor
+    | expr "*" factor -> mul
+    | expr "/" factor -> div
+    | expr "%" factor -> mod
+    | expr "&" factor -> bitand
+    | expr "^" factor -> bitxor
+    | expr ">>" factor -> bitrs
+    | expr "<<" factor -> bitls
+
+factor: atom
+      | "-" factor -> neg
+      | "+" factor -> pos
+      | "~" factor -> bitnot
+
+atom: NUMBER
+    | NAME
+    | func
+    | "(" expr ")"
+
+arith_op: PLUS | MINUS | MUL | DIV | MOD
+
+PLUS: "+"
+MINUS: "-"
+MUL: "*"
+DIV: "/"
+MOD: "%"
+
+BOOL: "true"
+    | "false"
+
+NOT: "!"
+
+ANDOR: "and" | "or"
+
+NEWLINE: /(\r?\n)+/
+
+WHITESPACE: (" " | "\n")+
+%ignore WHITESPACE
+
+%import common.WORD -> WORD
+%import common.WS_INLINE
+%import common.NUMBER
+%import common.CNAME -> NAME
+
+%ignore WS_INLINE

@@ -1,0 +1,13 @@
+{
+    "api_key": "",
+    "backend_model": "OpenRouter",
+    "model_identifier": "gpt-oss-20b",
+    "reflective_reasoning_intensity": 1,
+    "default_export_extension": "JSON",
+    "explanation": false,
+    "program_description": true,
+    "acsl_contracts": true,
+    "srs": true,
+    "nar_representation": true,
+    "seeds": true
+}
