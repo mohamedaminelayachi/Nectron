@@ -1,4 +1,3 @@
-# **Nectron**
 
 <p align="center">
     <img src="assets/nectron_logo.png" alt="Nectron" width="200"/>
