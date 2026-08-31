@@ -1,0 +1,7 @@
+dearpygui
+google-generativeai
+lark
+lxml
+openai
+pandas
+PyYAML
